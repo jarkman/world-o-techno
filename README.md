@@ -1,6 +1,8 @@
 # world-o-techno
 Location-based techno with Sonic Pi and gpsd, for Bristol Mini Maker Faire 2015
 
+See http://www.jarkman.co.uk/catalog/robots/worldotechno.htm for hardware details
+
 ## Getting started:
 
 Check this repository out into ```/home/pi```
