@@ -17,6 +17,15 @@ gps = Gps::Receiver.create('gpsd',:host => 'localhost', :port => 2947)
 
 gps.start
 
+chords = [:e1, :e2, :e3, :e4, :e5, :c2, :c3, :c4, :c5, :a1, :a2, :a3, :a4, :a5,]
+
+define :chooseChord do |chooser|
+  i = chooser % chords.size
+  c = chords[i];
+  print c
+  return c
+end
+
 define :gpsSatelliteCount do
   s = 0;
   if gps != nil && gps.satellites != nil &&  gps.satellites != 0
@@ -30,8 +39,8 @@ end
 define :gotFix do
   g = false;
 
-  print "gps in gotFix"
-  print gps
+  #print "gps in gotFix"
+  #print gps
 
   if gps != nil 
     g = gps.latitude != nil && gps.latitude != 0
@@ -46,8 +55,8 @@ define :lat do
   if gps != nil && gps.latitude != nil
     l = gps.latitude
   end
-  print "lat"
-  print l
+  #print "lat"
+  #print l
   return l
 end
 
@@ -57,22 +66,22 @@ define :lon do
   if gps != nil && gps.longitude != nil
     l = gps.longitude
   end
-  print "lon"
-  print l
+  #print "lon"
+  #print l
   return l
 end
 
 define :latInt do
   l =  lat().abs * 10**9
-  print "latInt"
-  print l
+  #print "latInt"
+  #print l
   return l
 end
 
 define :lonInt do
   l =  lon().abs * 10**9
-  print "lonInt"
-  print l
+  #print "lonInt"
+  #print l
   return l
 end
 
@@ -115,6 +124,8 @@ define :playTune do
   print ":playTune"
 
   cue :foo
+
+  loopChord = chooseChord( lonInt() % 656753 )
   4.times do |i|
     long = lonInt() % 100
     use_random_seed long
@@ -123,7 +134,7 @@ define :playTune do
       use_random_seed lonInt() % 257867 # Use a selection of large primes to get different seeds for each loop
       4.times do
         use_synth :tb303
-        play chord(:e3, :minor).choose, attack: 0, release: 0.1, cutoff: rrand_i(50, 90) + i * 10
+        play chord(loopChord, :minor).choose, attack: 0, release: 0.1, cutoff: rrand_i(50, 90) + i * 10
         sleep 0.125
       end
     end
@@ -135,13 +146,14 @@ define :playTune do
 
   cue :bar
   use_synth :tb303
+  loopChord = chooseChord( lonInt() % 10719881 )
   8.times do |i|
     sample :bd_fat, amp: 5
     use_random_seed latInt() % 1412041
     4.times do
       gspeed = speed().modulo(1)
-      puts gspeed
-      play chord(:e3, :minor).choose, attack: 0, release: 0.05, cutoff: rrand_i(70, 98) + i, res: gspeed
+      #puts gspeed
+      play chord(loopChord, :minor).choose, attack: 0, release: 0.05, cutoff: rrand_i(70, 98) + i, res: gspeed
       sleep 0.125
     end
   end
@@ -152,13 +164,14 @@ define :playTune do
 
   cue :baz
   with_fx :reverb, mix: 0.3 do |r|
+    loopChord = chooseChord( latInt() % 3101473 )
     8.times do |m|
       sample :bd_fat, amp: 5
       use_random_seed (lonInt() + latInt()) % 2256197
       4.times do
         control r, mix: 0.3 + (0.5 * (m.to_f / 32.0)) unless m == 0 if m % 8 == 0
         use_synth :prophet
-        play chord(:a3, :minor).choose, attack: 0, release: 0.08, cutoff: rrand_i(110, 130)
+        play chord(loopChord, :minor).choose, attack: 0, release: 0.08, cutoff: rrand_i(110, 130)
         sleep 0.125
       end
     end
@@ -170,7 +183,7 @@ define :playTune do
 
   cue :quux
   in_thread do
-
+    loopChord = chooseChord( lonInt() % 480967 )
     4.times do
       sample :bd_fat, amp: 5
       slat = latInt().modulo(1) + 0.1
@@ -179,7 +192,7 @@ define :playTune do
       with_fx :slicer, mix: 0.75, wave: 3, phase: slat do
         4.times do
           use_synth :tb303
-          play chord(:e3, :major).choose, attack: 0, release: 0.1, cutoff: rrand(50, 100)
+          play chord(loopChord, :major).choose, attack: 0, release: 0.1, cutoff: rrand(50, 100)
           sleep 0.25
         end
       end
