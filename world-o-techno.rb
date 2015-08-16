@@ -17,10 +17,11 @@ gps = Gps::Receiver.create('gpsd',:host => 'localhost', :port => 2947)
 
 gps.start
 
-chords = [:e1, :e2, :e3, :e4, :e5, :c2, :c3, :c4, :c5, :a1, :a2, :a3, :a4, :a5,]
+# in pitch order to give a systematic variation as you move
+chords = [:e1, :c1, :a1, :e2, :c2, :a2, :e3, :c3, :a3, :e4, :c4, :a4,:e5, :c5, :a5,:e6, :c6, :a6 ]
 
 define :chooseChord do |chooser|
-  i = chooser % chords.size
+  i = (chooser/2) % chords.size
   c = chords[i];
   print c
   return c
@@ -55,8 +56,8 @@ define :lat do
   if gps != nil && gps.latitude != nil
     l = gps.latitude
   end
-  print "lat"
-  print l
+  #print "lat"
+  #print l
   return l
 end
 
@@ -66,8 +67,8 @@ define :lon do
   if gps != nil && gps.longitude != nil
     l = gps.longitude
   end
-  print "lon"
-  print l
+  #print "lon"
+  #print l
   return l
 end
 
@@ -78,16 +79,16 @@ define :latInt do
 # Our GPS report better resolution than that, about 10**-9 degree, but that's not very repeatable
   l =  lat().abs * 300000
   l = l.round
-  print "latInt"
-  print l
+  #print "latInt"
+  #print l
   return l
 end
 
 define :lonInt do
   l =  lon().abs * 300000
   l = l.round
-  print "lonInt"
-  print l
+  #print "lonInt"
+  #print l
   return l
 end
 
