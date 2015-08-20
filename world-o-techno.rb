@@ -18,11 +18,12 @@ gps = Gps::Receiver.create('gpsd',:host => 'localhost', :port => 2947)
 gps.start
 
 # in pitch order to give a systematic variation as you move
-chords = [:e1, :c1, :a1, :e2, :c2, :a2, :e3, :c3, :a3, :e4, :c4, :a4,:e5, :c5, :a5,:e6, :c6, :a6 ]
+chords = [:a1, :c1, :e1, :a2, :c2, :e2, :a3, :c3, :e3, :a4, :c4, :e4 ]
 
 define :chooseChord do |chooser|
-  i = (chooser/2) % chords.size
-  c = chords[i];
+  i = (chooser/5) % chords.size# about 5 feet per chord
+
+c = chords[i];
   print c
   return c
 end
@@ -146,7 +147,7 @@ define :playTune do
     use_random_seed long
     4.times do
       sample :bd_fat, amp: 5
-      loopChord = chooseChord( lonInt() % 656753 ) # Pick chord form position on each bar so we hear motion sooner
+      loopChord = chooseChord( lonInt() % 656753 ) # Pick chord from position on each bar so we hear motion sooner
       use_random_seed lonInt() % 257867 # Use a selection of large primes to get different seeds hence different tunes for each loop
       4.times do
         use_synth :tb303
@@ -166,7 +167,7 @@ define :playTune do
   8.times do |i|
     sample :bd_fat, amp: 5
     use_random_seed latInt() % 1412041
-    loopChord = chooseChord( lonInt() % 10719881 )
+    loopChord = chooseChord( lonInt() % 656753 )
     4.times do
       gspeed = speed().modulo(1)
       #puts gspeed
